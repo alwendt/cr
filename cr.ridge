@@ -1,0 +1,58 @@
+%% cfo.ridge definition file
+%%balance
+	store	r.*,r14,24;1
+	call	r11,.*;-1
+%%callcost
+2
+%%nestcallcost
+2
+%%subcost
+1
+%%nestsubcost
+5
+%%ujump
+	br	[^r].*
+%%call
+	call	r11,.*,L
+	ret	r11,r[0-9]
+	ret	r11,r1[^1]
+%%return
+	ret	r11,r11
+%%callfmt
+	call	r11,%s
+%%cjump
+	br	r[^,]*,([^,!]*).*
+	br	([^,!]*).*
+	call	r11,(.*),L
+%%flushend
+	csect	code
+%%flushfmt
+	csect	code
+%%jumpfmt
+	br	%s
+%%flushbegin
+	dsect	data.*
+%%flush
+;.*
+	global	.*
+%%label
+(.*):
+%%labfmt
+%s:
+%%newlabel
+l%d:
+%%equate
+(.*)	equ	(.*)
+%%equatefmt
+\1	equ	\2
+%%badlist
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk.*
+	word	.*
+	align	.*
+%%nestentry
+	store	r11,r14,0\n	laddr	r14,r14,-120,L
+%%nestreturn
+	laddr	r14,r14,120,L\n	load	r11,r14,0\n	ret	r11,r11

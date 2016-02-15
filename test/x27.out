@@ -1,0 +1,16 @@
+	csect	code
+	call	r11,l1
+	call	r11,l1
+	call	r11,l1
+end
+l1:
+x
+x
+x
+x
+x
+x
+x
+x
+x
+	ret	r11,r11

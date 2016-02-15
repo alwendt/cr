@@ -1,0 +1,81 @@
+%% cfo.780 definition file
+%%eatblanks
+xxx
+%%balance
+pushl %1;1
+pusha%1 %2;1
+cvtbl %1,-(sp);1
+calls $%1,%2;-%1
+subl2 $4,sp;1
+subl2 $8,sp;2
+subl2 $12,sp;3
+subl2 $16,sp;4
+subl2 $20,sp;5
+subl2 $24,sp;6
+subl2 $28,sp;7
+%3l3 %1,%2,-(sp);1
+%%callcost
+1
+%%subcost
+1
+%%ujump
+jbr .*
+%%callfmt
+bsbw %s
+%%call
+bsbw %1
+%%return
+rsb 
+%%cjump
+jeql %1
+jgeq %1
+jleq %1
+jbcc %1
+jlbc %2,%1
+jcc %1
+jvc %1
+jbc %1
+jbr %1
+jeqlu %1
+jgequ %1
+jlequ %1
+jbsc %1
+jlbs %1
+jcs %1
+jvs %1
+jbs %1
+jneq %1
+jgtr %1
+jlss %1
+jbcs %1
+jnequ %1
+jgtru %1
+jlssu %1
+jbss %1
+bsbw %1
+%%flushend
+.text%1
+%%flushfmt
+.text
+%%jumpfmt
+jbr %s
+%%flushbegin
+.data%1
+%%flush
+.globl %1
+%%label
+(.*):
+%%labfmt
+%s:
+%%newlabel
+l%d:
+%%equate
+(.*)	equ	(.*)
+%%equatefmt
+\1	equ	\2
+%%badlist
+.*.align.*
+.*.word.*
+.*.long.*
+.*.byte.*
+.*.set.*

@@ -1,0 +1,22 @@
+.TH CR 1 local
+.DA 7 Jul 1999
+.SH NAME
+cr \- compress assembly language
+.SH SYNOPSIS
+.ft B
+.nf
+cr descfile < input > output
+.SH DESCRIPTION
+.I cr
+reads an input file of assembly language and looks for
+common sequences of instructions.
+If two instruction sequences both end in jumps to the
+same label, one of the sequences is replaced by a jump
+to the beginning of the other sequence (cross-jumping).
+Otherwise, the both sequences are replaced by calls to
+a generated procedure whose body is placed at the end
+of the output program (procedural abstraction).
+
+.SH DIAGNOSTICS
+.SH HISTORY
+.SH BUGS

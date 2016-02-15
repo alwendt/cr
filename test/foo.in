@@ -1,0 +1,58 @@
+LL0:
+	dsect	data
+	csect	code
+	align	2
+	global	_foo
+_foo:
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk1,L
+	br	L13,L
+L14:
+; line 3, file "foo.c"
+	store	r11,r15,-24
+	call	r11,_foo,L
+	load	r11,r15,-24
+	store 	r0,r15,-36
+	store	r11,r15,-24
+	call	r11,_foo,L
+	load	r11,r15,-24
+	store 	r0,r15,-40
+	store	r11,r15,-24
+	call	r11,_foo,L
+	load	r11,r15,-24
+	mpy	r0,r13
+	store 	r0,r15,-44
+	store	r11,r15,-24
+	call	r11,_foo,L
+	load	r11,r15,-24
+	store 	r0,r15,-48
+	store	r11,r15,-24
+	call	r11,_foo,L
+	load	r11,r15,-24
+	mpy	r0,r13
+	load 	r1,r15,-36
+	add	r0,r1
+	load 	r1,r15,-40
+	add	r0,r1
+	load 	r1,r15,-44
+	add	r0,r1
+	load 	r1,r15,-48
+	add	r0,r1
+	move	r13,r0
+L12:
+	load	r10,r15,-20
+	load	r12,r15,-28
+	load	r13,r15,-32
+	load	r11,r15,0
+	move	r14,r15
+	load	r15,r15,8
+	ret	r11,r11
+L13:
+	store	r10,r15,-20
+	store	r12,r15,-28
+	store	r13,r15,-32
+	br	L14,L
+stk1	equ	-72
+	dsect	data

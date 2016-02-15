@@ -1,0 +1,2 @@
+#!/bin/sh
+cl -Zi -Yd -I. -I./regexp cr.c index.c prioq.c int.c regexp/{regexp.c,regerror.c,regsub.c}

@@ -1,0 +1,22 @@
+	csect	code
+	call	r11,l1
+	call	r11,l1
+	call	r11,l1
+	call	r11,l1
+	call	r11,l1
+x
+end
+l1:
+	store	r11,r14,0
+	laddr	r14,r14,-120,L
+	call	r11,l2
+	call	r11,l2
+	call	r11,l2
+l2:
+x
+x
+x
+x
+	laddr	r14,r14,120,L
+	load	r11,r14,0
+	ret	r11,r11

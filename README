@@ -1,0 +1,46 @@
+
+cr reads an input file of assembly language and looks for
+common sequences of instructions.
+If two instruction sequences both end in jumps to the
+same label or in RETURN instructions, one of the sequences
+is replaced by a jump to the beginning of the other sequence
+(cross-jumping).
+Otherwise, both sequences are replaced by calls to
+a generated procedure whose body is placed at the end
+of the output program (procedural abstraction).
+
+#
+#  guidelines for making cr and testing it under Linux:
+#
+(cd regexp; make r)
+make cr
+
+foreach name ( x27 x81 foo compress )
+    cr cr.ridge < test/$name.in > asdf
+    diff asdf test/$name.out
+    end
+
+On NT, the nt_build script works pretty well.
+
+MANIFEST:
+
+Makefile           Makefile
+README             README
+cfo.c              Older version of cr.c
+code.448k          Sample input
+code.448k.opt      Sample output
+cr.1               Preliminary man page
+cr.780             Vax config
+cr.c               Main source file
+cr.h               Headers
+cr.ridge           Config file
+cr.x86             Config file
+fixlabels.pl       Perl script to uniquize labels
+index.c            Unix index function call
+int.c              McCreight suffix tree 
+nt_build           script
+prioq.c            priority queue
+regexp             Henry Spencer's regex routines
+test               test files
+
+After build, try "cr cr.x86 < code.448k".  Should run in under 2 minutes.

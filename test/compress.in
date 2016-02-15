@@ -1,0 +1,1875 @@
+	dsect	data
+	dsect	data
+_rcs_ident:
+	word	024486561H
+	word	06465723aH
+	word	020636f6dH
+	word	070726573H
+	word	0732e632cH
+	word	07620322eH
+	word	030203834H
+	word	02f30382fH
+	word	032382032H
+	word	0323a3030H
+	word	03a303020H
+	word	06a6f6520H
+	word	045787020H
+	word	024000000H
+	externd	__iob
+	externd	__bufendtab
+	externd	__ctype
+	global	_magic_header
+_magic_header:
+	word	01f9d0000H
+	externd	_n_bits
+	common	_n_bits,4
+	dsect	data
+	align	4
+	global	_maxbits
+_maxbits:
+	word	16
+	externd	_maxcode
+	common	_maxcode,4
+	align	4
+	global	_maxmaxcode
+_maxmaxcode:
+	word	65536
+	externd	_tab_next
+	common	_tab_next,131072
+	externd	_tab_chain
+	common	_tab_chain,131072
+	externd	_tab_prefix
+	common	_tab_prefix,131072
+	externd	_tab_suffix
+	common	_tab_suffix,65536
+	align	4
+	global	_free_ent
+_free_ent:
+	word	0
+	align	4
+	global	_exit_stat
+_exit_stat:
+	word	0
+	csect	code
+	global	_Usage
+	dsect	data2
+L46:
+	byte	'Usage: compress [-dfc] [-b maxbits] [file ...]\n\0'
+	csect	code
+stk1	equ	-72
+	dsect	data
+	align	4
+	global	_nomagic
+_nomagic:
+	word	0
+	align	4
+	global	_zcat_flg
+_zcat_flg:
+	word	0
+	csect	code
+	csect	code
+	align	2
+	csect	code
+	align	2
+_Usage:
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk1,L
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L46,L
+	store	r0,r14,32
+	call	r11,_fprintf,L
+	load	r11,r15,0
+	move	r14,r15
+	load	r15,r15,8
+	ret	r11,r11
+	global	_main
+	dsect	data2
+L58:
+	byte	'uncompress\0'
+	csect	code
+	dsect	data2
+L61:
+	byte	'zcat\0'
+	csect	code
+	dsect	data2
+L76:
+	byte	'Missing maxbits\n\0'
+	csect	code
+	dsect	data2
+L82:
+	byte	'Unknown flag: \'%c\'; \0'
+	csect	code
+	dsect	data2
+L91:
+	byte	'.Z\0'
+	csect	code
+	dsect	data2
+L95:
+	byte	'.Z\0'
+	csect	code
+	dsect	data2
+L96:
+	byte	'r\0'
+	csect	code
+	dsect	data2
+L102:
+	byte	'%s: not in compressed format\n\0'
+	csect	code
+	dsect	data2
+L104:
+	byte	'%s: compressed with %d bits, can only handle %d bits\n\0'
+	csect	code
+	dsect	data2
+L106:
+	byte	'.Z\0'
+	csect	code
+	dsect	data2
+L108:
+	byte	'%s: already has .Z suffix -- no change\n\0'
+	csect	code
+	dsect	data2
+L109:
+	byte	'r\0'
+	csect	code
+	dsect	data2
+L114:
+	byte	'%s: filename too long to tack on .Z\n\0'
+	csect	code
+	dsect	data2
+L115:
+	byte	'.Z\0'
+	csect	code
+	dsect	data2
+L119:
+	byte	'%s already exists;\0'
+	csect	code
+	dsect	data2
+L122:
+	byte	' do you wish to overwrite (y or n)? \0'
+	csect	code
+	dsect	data2
+L128:
+	byte	'stderr\0'
+	csect	code
+	dsect	data2
+L130:
+	byte	'\tnot overwritten\n\0'
+	csect	code
+	dsect	data2
+L132:
+	byte	'w\0'
+	csect	code
+	dsect	data2
+L134:
+	byte	'%s: \0'
+	csect	code
+	dsect	data2
+L147:
+	byte	'stdin: not in compressed format\n\0'
+	csect	code
+	dsect	data2
+L149:
+	byte	'stdin: compressed with %d bits, can only handle %d bits\n\0'
+	csect	code
+stk2	equ	-360
+	dsect	data
+	align	4
+_offset:
+	space	4
+	externd	_bytes_out
+	common	_bytes_out,4
+	csect	code
+	csect	code
+	align	2
+_main:
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk2,L
+	store	r13,r15,-32
+	load	r13,r15,24
+	movei	r0,0
+	store	r0,r15,-36
+	movei	r0,0
+	store	r0,r15,-40
+	move	r0,r13
+	lsli	r0,2
+	store	r0,r14,24
+	call	r11,_malloc,L
+	store	r0,r15,-248
+	store	r0,r15,-244
+	movei	r0,0
+	load	r1,r15,-244
+	store	r0,r1,0
+	load	r0,r15,32
+	load	r0,r0,0
+	store	r0,r14,24
+	laddr	r0,47
+	store	r0,r14,32
+	call	r11,_rindex,L
+	store	r0,r15,-252
+	br	r0= 0,L55
+	load	r0,r15,-252
+	addi	r0,1
+	store	r0,r15,-252
+	br	L56,L
+L55:
+	load	r0,r15,32
+	load	r0,r0,0
+	store	r0,r15,-252
+L56:
+	csect	code
+	load	r0,r15,-252
+	store	r0,r14,24
+	laddr	r0,L58,L
+	store	r0,r14,32
+	call	r11,_strcmp,L
+	br	r0<>0,L59
+	movei	r0,1
+	store	r0,r15,-36
+	br	L60,L
+L59:
+	csect	code
+	load	r0,r15,-252
+	store	r0,r14,24
+	laddr	r0,L61,L
+	store	r0,r14,32
+	call	r11,_strcmp,L
+	br	r0<>0,L62
+	movei	r0,1
+	store	r0,r15,-36
+	movei	r0,1
+	store	r0,_zcat_flg,L
+L62:
+L60:
+	subi	r13,1
+	load	r0,r15,32
+	addi	r0,4
+	store	r0,r15,32
+	br	L65
+.I0:
+	load	r0,r15,32
+	load	r0,r0,0
+	loadb	r0,r0,0
+	laddr	r1,45
+	br	r0= r1,L67
+	load	r0,r15,32
+	load	r0,r0,0
+	load	r1,r15,-248
+	addi	r1,4
+	store	r1,r15,-248
+	store	r0,r1,-4
+	movei	r0,0
+	load	r1,r15,-248
+	store	r0,r1,0
+L83:
+L63:
+	subi	r13,1
+	load	r0,r15,32
+	addi	r0,4
+	store	r0,r15,32
+L65:
+	br	r13> 0,.I0!
+	load	r0,_maxbits,L
+	laddr	r1,16
+	br	r0<=r1,L84
+	laddr	r0,16
+	store	r0,_maxbits,L
+L84:
+	movei	r0,1
+	load	r1,_maxbits,L
+	lsl	r0,r1
+	store	r0,_maxmaxcode,L
+	load	r0,r15,-244
+	load	r0,r0,0
+	br	r0= 0,L85
+	load	r0,r15,-244
+	store	r0,r15,-248
+L88:
+	load	r0,r15,-248
+	load	r0,r0,0
+	br	r0= 0,L142
+	movei	r0,0
+	store	r0,_exit_stat,L
+	load	r0,r15,-36
+	br	r0= 0,L89
+	csect	code
+	load	r0,r15,-248
+	load	r0,r0,0
+	store	r0,r14,24
+	call	r11,_strlen,L
+	load	r1,r15,-248
+	load	r1,r1,0
+	add	r0,r1
+	subi	r0,2
+	store	r0,r15,-296
+	store	r0,r14,24
+	laddr	r0,L91,L
+	store	r0,r14,32
+	call	r11,_strcmp,L
+	br	r0= 0,L92
+	laddr	r0,r15,-240
+	store	r0,r14,24
+	load	r0,r15,-248
+	load	r0,r0,0
+	store	r0,r14,32
+	call	r11,_strcpy,L
+	csect	code
+	laddr	r0,r15,-240
+	store	r0,r14,24
+	laddr	r0,L95,L
+	store	r0,r14,32
+	call	r11,_strcat,L
+	laddr	r0,r15,-240
+	load	r1,r15,-248
+	store	r0,r1,0
+L92:
+	csect	code
+	load	r0,r15,-248
+	load	r0,r0,0
+	store	r0,r14,24
+	laddr	r0,L96,L
+	store	r0,r14,32
+	laddr	r0,__iob,L
+	store	r0,r14,40
+	call	r11,_freopen,L
+	br	r0= 0,.I1
+	load	r0,_nomagic,L
+	br	r0<>0,L99
+	load	r0,__iob,L
+	subi	r0,1
+	store	r0,__iob,L
+	br	r0< 0,L9997
+	load	r0,__iob+4,L
+	addi	r0,1
+	store	r0,__iob+4,L
+	loadb	r0,r0,-1
+	br	L9996,L
+L9997:
+	laddr	r0,__iob,L
+	store	r0,r14,24
+	call	r11,__filbuf,L
+L9996:
+	loadb	r1,_magic_header,L
+	laddr	r2,255
+	and	r1,r2
+	br	r0<>r1,L9998
+	load	r0,__iob,L
+	subi	r0,1
+	store	r0,__iob,L
+	br	r0< 0,L9995
+	load	r0,__iob+4,L
+	addi	r0,1
+	store	r0,__iob+4,L
+	loadb	r0,r0,-1
+	br	L9994,L
+L9995:
+	laddr	r0,__iob,L
+	store	r0,r14,24
+	call	r11,__filbuf,L
+L9994:
+	loadb	r1,_magic_header+1,L
+	laddr	r2,255
+	and	r1,r2
+	br	r0= r1,L101
+L9998:
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L102,L
+	br	.I2
+L101:
+	load	r0,__iob,L
+	subi	r0,1
+	store	r0,__iob,L
+	br	r0< 0,L9993
+	load	r0,__iob+4,L
+	addi	r0,1
+	store	r0,__iob+4,L
+	loadb	r0,r0,-1
+	br	L9992,L
+L9993:
+	laddr	r0,__iob,L
+	store	r0,r14,24
+	call	r11,__filbuf,L
+L9992:
+	store	r0,_maxbits,L
+	movei	r0,1
+	load	r1,_maxbits,L
+	lsl	r0,r1
+	store	r0,_maxmaxcode,L
+	load	r0,_maxbits,L
+	laddr	r1,16
+	br	r0<=r1,L103
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L104,L
+	store	r0,r14,32
+	load	r0,r15,-248
+	load	r0,r0,0
+	store	r0,r14,40
+	load	r0,_maxbits,L
+	store	r0,r14,48
+	laddr	r0,16
+	store	r0,r14,56
+.I5:
+	call	r11,_fprintf,L
+	br	L86,L
+L103:
+L99:
+	laddr	r0,r15,-140
+	store	r0,r14,24
+	load	r0,r15,-248
+	load	r0,r0,0
+	store	r0,r14,32
+	call	r11,_strcpy,L
+	load	r0,r15,-248
+	load	r0,r0,0
+	store	r0,r14,24
+	call	r11,_strlen,L
+	subi	r0,2
+	laddr	r1,r15,-140
+	add	r0,r1
+	store	r0,r15,-296
+	movei	r0,0
+	load	r1,r15,-296
+	storeb	r0,r1,0
+	br	L105,L
+L89:
+	csect	code
+	load	r0,r15,-248
+	load	r0,r0,0
+	store	r0,r14,24
+	call	r11,_strlen,L
+	load	r1,r15,-248
+	load	r1,r1,0
+	add	r0,r1
+	subi	r0,2
+	store	r0,r15,-296
+	store	r0,r14,24
+	laddr	r0,L106,L
+	store	r0,r14,32
+	call	r11,_strcmp,L
+	br	r0<>0,L107
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L108,L
+.I2:
+	store	r0,r14,32
+	load	r0,r15,-248
+	load	r0,r0,0
+	br	.I3
+L107:
+	csect	code
+	load	r0,r15,-248
+	load	r0,r0,0
+	store	r0,r14,24
+	laddr	r0,L109,L
+	store	r0,r14,32
+	laddr	r0,__iob,L
+	store	r0,r14,40
+	call	r11,_freopen,L
+	br	r0<>0,L110
+.I1:
+	load	r0,r15,-248
+	load	r0,r0,0
+	br	.I4
+L110:
+	laddr	r0,r15,-140
+	store	r0,r14,24
+	load	r0,r15,-248
+	load	r0,r0,0
+	store	r0,r14,32
+	call	r11,_strcpy,L
+	laddr	r0,r15,-140
+	store	r0,r14,24
+	laddr	r0,47
+	store	r0,r14,32
+	call	r11,_rindex,L
+	store	r0,r15,-252
+	br	r0= 0,L111
+	load	r0,r15,-252
+	addi	r0,1
+	store	r0,r15,-252
+	br	L112,L
+L111:
+	laddr	r0,r15,-140
+	store	r0,r15,-252
+L112:
+	load	r0,r15,-252
+	store	r0,r14,24
+	call	r11,_strlen,L
+	br	r0<=12,L113
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L114,L
+	store	r0,r14,32
+	load	r0,r15,-252
+.I3:
+	store	r0,r14,40
+	br	.I5
+L113:
+	csect	code
+	laddr	r0,r15,-140
+	store	r0,r14,24
+	laddr	r0,L115,L
+	store	r0,r14,32
+	call	r11,_strcat,L
+L105:
+	load	r0,r15,-40
+	br	r0<>0,L116
+	load	r0,_zcat_flg,L
+	br	r0<>0,L116
+	laddr	r0,r15,-140
+	store	r0,r14,24
+	laddr	r0,r15,-292
+	store	r0,r14,32
+	call	r11,_stat,L
+	br	r0<>0,L118
+	laddr	r0,110
+	storeb	r0,r15,-294
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L119,L
+	store	r0,r14,32
+	laddr	r0,r15,-140
+	store	r0,r14,40
+	call	r11,_fprintf,L
+	call	r11,_foreground,L
+	br	r0= 0,L121
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L122,L
+	store	r0,r14,32
+	laddr	r0,r15,-140
+	store	r0,r14,40
+	call	r11,_fprintf,L
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	call	r11,_fflush,L
+	movei	r0,2
+	store	r0,r14,24
+	laddr	r0,r15,-294
+	store	r0,r14,32
+	movei	r0,2
+	store	r0,r14,40
+	call	r11,_read,L
+L125:
+	loadb	r0,r15,-293
+	br	r0= 10,L126
+	movei	r0,2
+	store	r0,r14,24
+	laddr	r0,r15,-293
+	store	r0,r14,32
+	movei	r0,1
+	store	r0,r14,40
+	call	r11,_read,L
+	br	r0>=0,L125!
+	csect	code
+	laddr	r0,L128,L
+	store	r0,r14,24
+	call	r11,_perror,L
+L126:
+L121:
+	loadb	r0,r15,-294
+	laddr	r1,121
+	br	r0= r1,L129
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L130,L
+	store	r0,r14,32
+	br	.I5
+L129:
+L118:
+L116:
+	load	r0,_zcat_flg,L
+	br	r0<>0,L131
+	csect	code
+	laddr	r0,r15,-140
+	store	r0,r14,24
+	laddr	r0,L132,L
+	store	r0,r14,32
+	laddr	r0,__iob+16,L
+	store	r0,r14,40
+	call	r11,_freopen,L
+	br	r0<>0,L133
+	laddr	r0,r15,-140
+.I4:
+	store	r0,r14,24
+	call	r11,_perror,L
+	br	L86,L
+L133:
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L134,L
+	store	r0,r14,32
+	load	r0,r15,-248
+	load	r0,r0,0
+	store	r0,r14,40
+	call	r11,_fprintf,L
+L131:
+	load	r0,r15,-36
+	br	r0<>0,L135
+	call	r11,_compress,L
+	br	L137,L
+L135:
+	call	r11,_decompress,L
+L137:
+	load	r0,_zcat_flg,L
+	br	r0<>0,L139
+	load	r0,r15,-248
+	load	r0,r0,0
+	store	r0,r14,24
+	laddr	r0,r15,-140
+	store	r0,r14,32
+	call	r11,_copystat,L
+	load	r0,__iob+32,L
+	subi	r0,1
+	store	r0,__iob+32,L
+	br	r0< 0,L9991
+	movei	r0,10
+	load	r1,__iob+36,L
+	addi	r1,1
+	store	r1,__iob+36,L
+	storeb	r0,r1,-1
+	loadb	r0,r1,-1
+	br	L9990,L
+L9991:
+	movei	r0,10
+	store	r0,r14,24
+	laddr	r0,__iob+32,L
+	store	r0,r14,32
+	call	r11,__flsbuf,L
+L9990:
+L139:
+L86:
+	load	r0,r15,-248
+	addi	r0,4
+	store	r0,r15,-248
+	br	L88,L
+L85:
+	load	r0,r15,-36
+	br	r0<>0,L143
+	call	r11,_compress,L
+	load	r0,__iob+32,L
+	subi	r0,1
+	store	r0,__iob+32,L
+	br	r0< 0,L9989
+	movei	r0,10
+	load	r1,__iob+36,L
+	addi	r1,1
+	store	r1,__iob+36,L
+	storeb	r0,r1,-1
+	loadb	r0,r1,-1
+L9988:
+L142:
+	load	r0,_exit_stat,L
+	store	r0,r14,24
+	call	r11,_exit,L
+	load	r13,r15,-32
+	load	r11,r15,0
+	move	r14,r15
+	load	r15,r15,8
+	ret	r11,r11
+L9989:
+	movei	r0,10
+	store	r0,r14,24
+	laddr	r0,__iob+32,L
+	store	r0,r14,32
+	call	r11,__flsbuf,L
+	br	L9988
+L143:
+	load	r0,_nomagic,L
+	br	r0<>0,L145
+	load	r0,__iob,L
+	subi	r0,1
+	store	r0,__iob,L
+	br	r0< 0,L9986
+	load	r0,__iob+4,L
+	addi	r0,1
+	store	r0,__iob+4,L
+	loadb	r0,r0,-1
+	br	L9985,L
+L9986:
+	laddr	r0,__iob,L
+	store	r0,r14,24
+	call	r11,__filbuf,L
+L9985:
+	loadb	r1,_magic_header,L
+	laddr	r2,255
+	and	r1,r2
+	br	r0<>r1,L9987
+	load	r0,__iob,L
+	subi	r0,1
+	store	r0,__iob,L
+	br	r0< 0,L9984
+	load	r0,__iob+4,L
+	addi	r0,1
+	store	r0,__iob+4,L
+	loadb	r0,r0,-1
+	br	L9983,L
+L9984:
+	laddr	r0,__iob,L
+	store	r0,r14,24
+	call	r11,__filbuf,L
+L9983:
+	loadb	r1,_magic_header+1,L
+	laddr	r2,255
+	and	r1,r2
+	br	r0= r1,L146
+L9987:
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L147,L
+	store	r0,r14,32
+	call	r11,_fprintf,L
+	movei	r0,1
+	store	r0,r14,24
+	call	r11,_exit,L
+L146:
+	load	r0,__iob,L
+	subi	r0,1
+	store	r0,__iob,L
+	br	r0< 0,L9982
+	load	r0,__iob+4,L
+	addi	r0,1
+	store	r0,__iob+4,L
+	loadb	r0,r0,-1
+	br	L9981,L
+L9982:
+	laddr	r0,__iob,L
+	store	r0,r14,24
+	call	r11,__filbuf,L
+L9981:
+	store	r0,_maxbits,L
+	movei	r0,1
+	load	r1,_maxbits,L
+	lsl	r0,r1
+	store	r0,_maxmaxcode,L
+	load	r0,_maxbits,L
+	laddr	r1,16
+	br	r0<=r1,L148
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L149,L
+	store	r0,r14,32
+	load	r0,_maxbits,L
+	store	r0,r14,40
+	laddr	r0,16
+	store	r0,r14,48
+	call	r11,_fprintf,L
+	movei	r0,1
+	store	r0,r14,24
+	call	r11,_exit,L
+L148:
+L145:
+	call	r11,_decompress,L
+	br	L9988
+.I6:
+	load	r0,r15,32
+	load	r0,r0,0
+	loadb	r0,r0,0
+	laddr	r1,98
+	br	r0= r1,L74
+	laddr	r1,99
+	br	r0= r1,L80
+	laddr	r1,100
+	br	r0= r1,L71
+	laddr	r1,102
+	br	r0= r1,L72
+	laddr	r1,110
+	br	r0<>r1,L81
+	movei	r0,1
+	store	r0,_nomagic,L
+	br	L67,L
+L71:
+	movei	r0,1
+	store	r0,r15,-36
+	br	L67,L
+L72:
+	movei	r0,1
+	store	r0,r15,-40
+	br	L67,L
+L74:
+	load	r0,r15,32
+	load	r0,r0,0
+	addi	r0,1
+	load	r1,r15,32
+	store	r0,r1,0
+	loadb	r0,r0,0
+	br	r0<>0,L75
+	subi	r13,1
+	br	r13= 0,L9999
+	load	r0,r15,32
+	addi	r0,4
+	store	r0,r15,32
+	load	r0,r0,0
+	br	r0<>0,L75
+L9999:
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L76,L
+	store	r0,r14,32
+	call	r11,_fprintf,L
+	call	r11,_Usage,L
+	movei	r0,1
+	store	r0,r14,24
+	call	r11,_exit,L
+L75:
+	load	r0,r15,32
+	load	r0,r0,0
+	store	r0,r14,24
+	call	r11,_atoi,L
+	store	r0,_maxbits,L
+	br	L83
+L80:
+	movei	r0,1
+	store	r0,_zcat_flg,L
+	br	L67,L
+L81:
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L82,L
+	store	r0,r14,32
+	load	r0,r15,32
+	load	r0,r0,0
+	loadb	r0,r0,0
+	store	r0,r14,40
+	call	r11,_fprintf,L
+	call	r11,_Usage,L
+	movei	r0,1
+	store	r0,r14,24
+	call	r11,_exit,L
+L67:
+	load	r0,r15,32
+	load	r0,r0,0
+	addi	r0,1
+	load	r1,r15,32
+	store	r0,r1,0
+	loadb	r0,r0,0
+	br	r0= 0,L63!
+	br	.I6
+	global	_compress
+	dsect	data2
+L177:
+	byte	'Compression: %5.2f%%\0'
+	csect	code
+	dsect	data
+	align	8
+L178:
+	word	040590000H
+	word	00H
+	csect	code
+stk3	equ	-80
+	dsect	data
+	dsect	data
+_buf:
+	space	16
+	global	_lmask
+_lmask:
+	word	0fffefcf8H
+	word	0f0e0c080H
+	word	00H
+	global	_rmask
+_rmask:
+	word	010307H
+	word	0f1f3f7fH
+	word	0ff000000H
+	csect	code
+	csect	code
+	align	2
+_compress:
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk3,L
+	store	r9,r15,-16
+	store	r10,r15,-20
+	store	r12,r15,-28
+	store	r13,r15,-32
+	movei	r10,1
+	movei	r0,0
+	store	r0,_offset,L
+	movei	r0,0
+	store	r0,_bytes_out,L
+	movei	r0,1
+	movei	r1,9
+	store	r1,_n_bits,L
+	lsl	r0,r1
+	subi	r0,1
+	store	r0,_maxcode,L
+	movei	r12,0
+	br	L157
+.I7:
+	movei	r0,0
+	move	r1,r12
+	lsli	r1,1
+	storeh	r0,r1,_tab_chain,L
+	loadh	r0,r1,_tab_chain,L
+	move	r1,r12
+	lsli	r1,1
+	storeh	r0,r1,_tab_next,L
+	storeb	r12,r12,_tab_suffix,L
+	addi	r12,1
+L157:
+	laddr	r0,256
+	br	r12< r0,.I7!
+	laddr	r0,256
+	store	r0,_free_ent,L
+	load	r0,_nomagic,L
+	br	r0<>0,L158
+	load	r0,__iob+16,L
+	subi	r0,1
+	store	r0,__iob+16,L
+	br	r0< 0,L9980
+	loadb	r0,_magic_header,L
+	load	r1,__iob+20,L
+	addi	r1,1
+	store	r1,__iob+20,L
+	storeb	r0,r1,-1
+	loadb	r0,r1,-1
+	br	L9979,L
+L9980:
+	loadb	r0,_magic_header,L
+	store	r0,r14,24
+	laddr	r0,__iob+16,L
+	store	r0,r14,32
+	store	r11,r15,-24
+	call	r11,__flsbuf,L
+	load	r11,r15,-24
+L9979:
+	load	r0,__iob+16,L
+	subi	r0,1
+	store	r0,__iob+16,L
+	br	r0< 0,L9978
+	loadb	r0,_magic_header+1,L
+	load	r1,__iob+20,L
+	addi	r1,1
+	store	r1,__iob+20,L
+	storeb	r0,r1,-1
+	loadb	r0,r1,-1
+	br	L9977,L
+L9978:
+	loadb	r0,_magic_header+1,L
+	store	r0,r14,24
+	laddr	r0,__iob+16,L
+	store	r0,r14,32
+	store	r11,r15,-24
+	call	r11,__flsbuf,L
+	load	r11,r15,-24
+L9977:
+	load	r0,__iob+16,L
+	subi	r0,1
+	store	r0,__iob+16,L
+	br	r0< 0,L9976
+	load	r0,_maxbits,L
+	laddr	r1,0ffh
+	and	r1,r0
+	load	r0,__iob+20,L
+	addi	r0,1
+	store	r0,__iob+20,L
+	storeb	r1,r0,-1
+	loadb	r1,r0,-1
+	br	L9975,L
+L9976:
+	load	r0,_maxbits,L
+	laddr	r1,0ffh
+	and	r1,r0
+	store	r1,r14,24
+	laddr	r0,__iob+16,L
+	store	r0,r14,32
+	store	r11,r15,-24
+	call	r11,__flsbuf,L
+	move	r1,r0
+	load	r11,r15,-24
+L9975:
+L158:
+	load	r0,__iob,L
+	subi	r0,1
+	store	r0,__iob,L
+	br	r0< 0,L9974
+	load	r0,__iob+4,L
+	addi	r0,1
+	store	r0,__iob+4,L
+	loadb	r0,r0,-1
+	br	L9973,L
+L9974:
+	laddr	r0,__iob,L
+	store	r0,r14,24
+	store	r11,r15,-24
+	call	r11,__filbuf,L
+	load	r11,r15,-24
+L9973:
+	move	r12,r0
+	br	L159
+.I8:
+	load	r0,__iob,L
+	subi	r0,1
+	store	r0,__iob,L
+	br	r0< 0,L9972
+	load	r0,__iob+4,L
+	addi	r0,1
+	store	r0,__iob+4,L
+	loadb	r0,r0,-1
+	br	L9971,L
+L9972:
+	laddr	r0,__iob,L
+	store	r0,r14,24
+	store	r11,r15,-24
+	call	r11,__filbuf,L
+	load	r11,r15,-24
+L9971:
+	move	r13,r0
+	noti	r0,0
+	br	r13= r0,L160
+	addi	r10,1
+	move	r0,r12
+	lsli	r0,1
+	loadh	r11,r0,_tab_chain,L
+L163:
+	br	r11= 0,L162
+	loadb	r0,r11,_tab_suffix,L
+	lcomp	r0,r13
+	br	r0>=0,L165
+	move	r0,r11
+	lsli	r0,1
+	loadh	r11,r0,_tab_next,L
+	br	L163,L
+L165:
+	loadb	r0,r11,_tab_suffix,L
+	br	r0= r13,L175
+L162:
+	store	r12,r14,24
+	store	r11,r15,-24
+	call	r11,_output,L
+	load	r11,r15,-24
+	load	r11,_free_ent,L
+	load	r0,_maxmaxcode,L
+	br	r11>=r0,L168
+	movei	r0,0
+	move	r1,r11
+	lsli	r1,1
+	storeh	r0,r1,_tab_chain,L
+	storeb	r13,r11,_tab_suffix,L
+	move	r0,r12
+	lsli	r0,1
+	loadh	r9,r0,_tab_chain,L
+	br	r9= 0,L9970
+	loadb	r0,r9,_tab_suffix,L
+	lcomp	r0,r13
+	br	r0<=0,L169
+L9970:
+	move	r0,r11
+	lsli	r0,1
+	storeh	r9,r0,_tab_next,L
+	move	r0,r12
+	lsli	r0,1
+	storeh	r11,r0,_tab_chain,L
+	br	L170,L
+L169:
+L173:
+	move	r0,r9
+	lsli	r0,1
+	loadh	r12,r0,_tab_next,L
+	br	r12= 0,L172
+	loadb	r0,r12,_tab_suffix,L
+	lcomp	r0,r13
+	br	r0<=0,L174
+L172:
+	move	r0,r11
+	lsli	r0,1
+	storeh	r12,r0,_tab_next,L
+	move	r0,r9
+	lsli	r0,1
+	storeh	r11,r0,_tab_next,L
+L170:
+	laddr	r0,r11,1
+	store	r0,_free_ent,L
+L168:
+	move	r11,r13
+L175:
+	move	r12,r11
+L159:
+	loadb	r0,__iob+12,L
+	laddr	r1,16
+	and	r0,r1
+	br	r0= 0,.I8!
+L160:
+	store	r12,r14,24
+	store	r11,r15,-24
+	call	r11,_output,L
+	load	r11,r15,-24
+	noti	r0,0
+	store	r0,r14,24
+	store	r11,r15,-24
+	call	r11,_output,L
+	load	r11,r15,-24
+	load	r0,_zcat_flg,L
+	br	r0<>0,L176
+	csect	code
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L177,L
+	store	r0,r14,32
+	load	r0,_bytes_out,L
+	move	r1,r10
+	sub	r1,r0
+	dfloat	r0,r1
+	loadd	r2,L178,L
+	drmpy	r0,r2
+	dfloat	r2,r10
+	drdiv	r0,r2
+	stored	r0,r14,40
+	store	r11,r15,-24
+	call	r11,_fprintf,L
+	load	r11,r15,-24
+L176:
+	load	r0,_bytes_out,L
+	br	r0<=r10,L152
+	movei	r0,2
+	store	r0,_exit_stat,L
+L152:
+	load	r9,r15,-16
+	load	r10,r15,-20
+	load	r12,r15,-28
+	load	r13,r15,-32
+	load	r11,r15,0
+	move	r14,r15
+	load	r15,r15,8
+	ret	r11,r11
+L174:
+	move	r9,r12
+	br	L173,L
+	global	_output
+stk4	equ	-88
+	dsect	data
+	csect	code
+	csect	code
+	align	2
+_output:
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk4,L
+	store	r12,r15,-28
+	store	r13,r15,-32
+	load	r13,_offset,L
+	load	r12,_n_bits,L
+	laddr	r11,_buf,L
+	load	r0,r15,24
+	br	r0< 0,L187
+	move	r0,r13
+	asri	r0,3
+	add	r11,r0
+	andi	r13,7
+	loadb	r0,r11,0
+	loadb	r1,r13,_rmask,L
+	and	r0,r1
+	load	r1,r15,24
+	lsl	r1,r13
+	loadb	r2,r13,_lmask,L
+	and	r1,r2
+	or	r0,r1
+	storeb	r0,r11,0
+	addi	r11,1
+	movei	r0,8
+	sub	r0,r13
+	sub	r12,r0
+	movei	r0,8
+	sub	r0,r13
+	load	r1,r15,24
+	asr	r1,r0
+	store	r1,r15,24
+	br	r12< 8,L188
+	load	r0,r15,24
+	addi	r11,1
+	storeb	r0,r11,-1
+	load	r0,r15,24
+	asri	r0,8
+	store	r0,r15,24
+	subi	r12,8
+L188:
+	load	r0,r15,24
+	storeb	r0,r11,0
+	load	r0,_n_bits,L
+	load	r1,_offset,L
+	add	r1,r0
+	store	r1,_offset,L
+	move	r0,r1
+	load	r1,_n_bits,L
+	lsli	r1,3
+	br	r0<>r1,L189
+	laddr	r0,_buf,L
+	store	r0,r14,24
+	movei	r0,1
+	store	r0,r14,32
+	load	r0,_n_bits,L
+	store	r0,r14,40
+	laddr	r0,__iob+16,L
+	store	r0,r14,48
+	store	r11,r15,-24
+	call	r11,_fwrite,L
+	load	r11,r15,-24
+	load	r1,_n_bits,L
+	br	r0= r1,L191
+	store	r11,r15,-24
+	call	r11,_writeerr,L
+	load	r11,r15,-24
+L191:
+	movei	r0,0
+	store	r0,_offset,L
+	load	r0,_n_bits,L
+	load	r1,_bytes_out,L
+	add	r1,r0
+	store	r1,_bytes_out,L
+L189:
+	load	r0,_free_ent,L
+	load	r1,_maxcode,L
+	br	r0<=r1,L198
+	load	r0,_offset,L
+	br	r0<=0,L194
+	laddr	r0,_buf,L
+	store	r0,r14,24
+	movei	r0,1
+	store	r0,r14,32
+	load	r0,_n_bits,L
+	store	r0,r14,40
+	laddr	r0,__iob+16,L
+	store	r0,r14,48
+	store	r11,r15,-24
+	call	r11,_fwrite,L
+	load	r11,r15,-24
+	load	r1,_n_bits,L
+	br	r0= r1,L195
+	store	r11,r15,-24
+	call	r11,_writeerr,L
+	load	r11,r15,-24
+L195:
+	load	r0,_n_bits,L
+	load	r1,_bytes_out,L
+	add	r1,r0
+	store	r1,_bytes_out,L
+L194:
+	movei	r0,0
+	store	r0,_offset,L
+	load	r0,_n_bits,L
+	addi	r0,1
+	store	r0,_n_bits,L
+	load	r1,_maxbits,L
+	br	r0<>r1,L196
+	load	r0,_maxmaxcode,L
+	br	.I9
+L196:
+	movei	r0,1
+	load	r1,_n_bits,L
+	lsl	r0,r1
+	subi	r0,1
+.I9:
+	store	r0,_maxcode,L
+L197:
+L200:
+L198:
+	load	r12,r15,-28
+	load	r13,r15,-32
+	load	r11,r15,0
+	move	r14,r15
+	load	r15,r15,8
+	ret	r11,r11
+L187:
+	load	r0,_offset,L
+	br	r0<=0,L199
+	laddr	r0,_buf,L
+	store	r0,r14,24
+	movei	r0,1
+	store	r0,r14,32
+	load	r0,_offset,L
+	addi	r0,7
+	movei	r1,8
+	div	r0,r1
+	store	r0,r14,40
+	laddr	r0,__iob+16,L
+	store	r0,r14,48
+	store	r11,r15,-24
+	call	r11,_fwrite,L
+	load	r11,r15,-24
+L199:
+	load	r0,_offset,L
+	addi	r0,7
+	movei	r1,8
+	div	r0,r1
+	load	r1,_bytes_out,L
+	add	r1,r0
+	store	r1,_bytes_out,L
+	movei	r0,0
+	store	r0,_offset,L
+	laddr	r0,__iob+16,L
+	store	r0,r14,24
+	store	r11,r15,-24
+	call	r11,_fflush,L
+	load	r11,r15,-24
+	loadb	r0,__iob+28,L
+	laddr	r1,32
+	and	r0,r1
+	br	r0= 0,L200!
+	store	r11,r15,-24
+	call	r11,_writeerr,L
+	load	r11,r15,-24
+	br	L197
+	global	_decompress
+stk5	equ	-10088
+	dsect	data
+	csect	code
+	csect	code
+	align	2
+_decompress:
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk5,L
+	store	r9,r15,-16
+	store	r10,r15,-20
+	store	r12,r15,-28
+	store	r13,r15,-32
+	laddr	r13,10000
+	movei	r0,1
+	movei	r1,9
+	store	r1,_n_bits,L
+	lsl	r0,r1
+	subi	r0,1
+	store	r0,_maxcode,L
+	movei	r0,0
+	store	r0,_free_ent,L
+	br	L206
+.IA:
+	movei	r0,0
+	load	r1,_free_ent,L
+	lsli	r1,1
+	storeh	r0,r1,_tab_chain,L
+	loadh	r0,r1,_tab_chain,L
+	load	r1,_free_ent,L
+	lsli	r1,1
+	storeh	r0,r1,_tab_next,L
+	movei	r0,0
+	load	r1,_free_ent,L
+	lsli	r1,1
+	storeh	r0,r1,_tab_prefix,L
+	load	r0,_free_ent,L
+	move	r1,r0
+	storeb	r0,r1,_tab_suffix,L
+	load	r0,_free_ent,L
+	addi	r0,1
+	store	r0,_free_ent,L
+L206:
+	load	r0,_free_ent,L
+	laddr	r1,256
+	br	r0< r1,.IA!
+	store	r11,r15,-24
+	call	r11,_getcode,L
+	load	r11,r15,-24
+	move	r11,r0
+	move	r9,r11
+	load	r0,__iob+16,L
+	subi	r0,1
+	store	r0,__iob+16,L
+	br	r0< 0,L9968
+	laddr	r0,0ffh
+	and	r0,r9
+	load	r1,__iob+20,L
+	addi	r1,1
+	store	r1,__iob+20,L
+	storeb	r0,r1,-1
+	loadb	r0,r1,-1
+	br	L9967,L
+L9968:
+	laddr	r0,0ffh
+	and	r0,r9
+	store	r0,r14,24
+	laddr	r0,__iob+16,L
+	store	r0,r14,32
+	store	r11,r15,-24
+	call	r11,__flsbuf,L
+	load	r11,r15,-24
+L9967:
+L207:
+	store	r11,r15,-24
+	call	r11,_getcode,L
+	load	r11,r15,-24
+	move	r12,r0
+	noti	r0,0
+	br	r12<>r0,.IC
+	laddr	r0,__iob+16,L
+	store	r0,r14,24
+	store	r11,r15,-24
+	call	r11,_fflush,L
+	load	r11,r15,-24
+	loadb	r0,__iob+28,L
+	laddr	r1,32
+	and	r0,r1
+	br	r0= 0,L214
+	store	r11,r15,-24
+	call	r11,_writeerr,L
+	load	r11,r15,-24
+L214:
+	load	r9,r15,-16
+	load	r10,r15,-20
+	load	r12,r15,-28
+	load	r13,r15,-32
+	load	r11,r15,0
+	move	r14,r15
+	load	r15,r15,8
+	ret	r11,r11
+.IC:
+	move	r10,r12
+	load	r0,_free_ent,L
+	br	r12< r0,L209
+	subi	r13,1
+	laddr	r0,r15,-10032
+	add	r0,r13
+	storeb	r9,r0,0
+	move	r12,r11
+	br	L209
+.IB:
+	loadb	r0,r12,_tab_suffix,L
+	subi	r13,1
+	laddr	r1,r15,-10032
+	add	r1,r13
+	storeb	r0,r1,0
+	move	r0,r12
+	lsli	r0,1
+	loadh	r12,r0,_tab_prefix,L
+L209:
+	laddr	r0,256
+	lcomp	r0,r12
+	br	r0<=0,.IB!
+	loadb	r9,r12,_tab_suffix,L
+	subi	r13,1
+	laddr	r0,r15,-10032
+	add	r0,r13
+	storeb	r9,r0,0
+	laddr	r0,r15,-10032
+	add	r0,r13
+	store	r0,r14,24
+	movei	r0,1
+	store	r0,r14,32
+	laddr	r0,10000
+	sub	r0,r13
+	store	r0,r14,40
+	laddr	r0,__iob+16,L
+	store	r0,r14,48
+	store	r11,r15,-24
+	call	r11,_fwrite,L
+	load	r11,r15,-24
+	laddr	r1,10000
+	sub	r1,r13
+	br	r0= r1,L212
+	store	r11,r15,-24
+	call	r11,_writeerr,L
+	load	r11,r15,-24
+L212:
+	laddr	r13,10000
+	load	r12,_free_ent,L
+	load	r0,_maxmaxcode,L
+	br	r12>=r0,L213
+	move	r0,r12
+	lsli	r0,1
+	storeh	r11,r0,_tab_prefix,L
+	storeb	r9,r12,_tab_suffix,L
+	laddr	r0,r12,1
+	store	r0,_free_ent,L
+L213:
+	move	r11,r10
+	br	L207,L
+	global	_getcode
+	dsect	data
+	align	4
+L218:
+	word	0
+	align	4
+L219:
+	word	0
+	dsect	data
+L220:
+	space	16
+	csect	code
+stk6	equ	-88
+	dsect	data
+	csect	code
+	csect	code
+	align	2
+_getcode:
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk6,L
+	store	r10,r15,-20
+	store	r12,r15,-28
+	store	r13,r15,-32
+	csect	code
+	laddr	r10,L220,L
+	load	r0,L218,L
+	load	r1,L219,L
+	br	r0>=r1,L9966
+	load	r0,_free_ent,L
+	load	r1,_maxcode,L
+	br	r0<=r1,L221
+L9966:
+	load	r0,_free_ent,L
+	load	r1,_maxcode,L
+	br	r0<=r1,L222
+	load	r0,_n_bits,L
+	addi	r0,1
+	store	r0,_n_bits,L
+	load	r1,_maxbits,L
+	br	r0<>r1,L223
+	load	r0,_maxmaxcode,L
+	store	r0,_maxcode,L
+	br	L224,L
+L223:
+	movei	r0,1
+	load	r1,_n_bits,L
+	lsl	r0,r1
+	subi	r0,1
+	store	r0,_maxcode,L
+L224:
+L222:
+	laddr	r0,L220,L
+	store	r0,r14,24
+	movei	r0,1
+	store	r0,r14,32
+	load	r0,_n_bits,L
+	store	r0,r14,40
+	laddr	r0,__iob,L
+	store	r0,r14,48
+	store	r11,r15,-24
+	call	r11,_fread,L
+	load	r11,r15,-24
+	store	r0,L219,L
+	br	r0> 0,L226
+	noti	r0,0
+L215:
+	load	r10,r15,-20
+	load	r12,r15,-28
+	load	r13,r15,-32
+	load	r11,r15,0
+	move	r14,r15
+	load	r15,r15,8
+	ret	r11,r11
+L226:
+	movei	r0,0
+	store	r0,L218,L
+	load	r0,L219,L
+	lsli	r0,3
+	load	r1,_n_bits,L
+	subi	r1,1
+	sub	r0,r1
+	store	r0,L219,L
+L221:
+	load	r12,L218,L
+	load	r11,_n_bits,L
+	move	r0,r12
+	asri	r0,3
+	add	r10,r0
+	andi	r12,7
+	addi	r10,1
+	loadb	r0,r10,-1
+	lsr	r0,r12
+	move	r13,r0
+	movei	r0,8
+	sub	r0,r12
+	sub	r11,r0
+	movei	r0,8
+	sub	r0,r12
+	move	r12,r0
+	br	r11< 8,L227
+	addi	r10,1
+	loadb	r0,r10,-1
+	lsl	r0,r12
+	or	r13,r0
+	addi	r12,8
+	subi	r11,8
+L227:
+	loadb	r0,r10,0
+	loadb	r1,r11,_rmask,L
+	and	r0,r1
+	lsl	r0,r12
+	or	r13,r0
+	load	r0,_n_bits,L
+	load	r1,L218,L
+	add	r1,r0
+	store	r1,L218,L
+	move	r0,r13
+	br	L215,L
+	global	_rindex
+stk7	equ	-40
+	dsect	data
+	csect	code
+	csect	code
+	align	2
+_rindex:
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk7,L
+	store	r12,r15,-28
+	store	r13,r15,-32
+	load	r13,r15,24
+	loadb	r12,r15,35
+	movei	r0,0
+	store	r0,r15,-36
+	br	L233
+.ID:
+	loadb	r0,r13,0
+	br	r0<>r12,L234
+	store	r13,r15,-36
+L234:
+	addi	r13,1
+L233:
+	loadb	r0,r13,0
+	br	r0<>0,.ID!
+	load	r0,r15,-36
+	load	r12,r15,-28
+	load	r13,r15,-32
+	load	r11,r15,0
+	move	r14,r15
+	load	r15,r15,8
+	ret	r11,r11
+	global	_writeerr
+	dsect	data2
+L238:
+	byte	'goodbye, write error\0'
+	csect	code
+stk8	equ	-64
+	dsect	data
+	csect	code
+	csect	code
+	align	2
+_writeerr:
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk8,L
+	csect	code
+	laddr	r0,L238,L
+	store	r0,r14,24
+	call	r11,_perror,L
+	movei	r0,1
+	store	r0,r14,24
+	call	r11,_exit,L
+	load	r11,r15,0
+	move	r14,r15
+	load	r15,r15,8
+	ret	r11,r11
+	global	_copystat
+	dsect	data2
+L245:
+	byte	' -- not a regular file: unchanged\0'
+	csect	code
+	dsect	data2
+L248:
+	byte	' -- has %d other links: unchanged\0'
+	csect	code
+	dsect	data2
+L251:
+	byte	' -- file unchanged\0'
+	csect	code
+	dsect	data2
+L259:
+	byte	' -- replaced with %s\0'
+	csect	code
+stk9	equ	-136
+	dsect	data
+	csect	code
+	csect	code
+	align	2
+_copystat:
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk9,L
+	laddr	r0,__iob+16,L
+	store	r0,r14,24
+	call	r11,_fclose,L
+	load	r0,r15,24
+	store	r0,r14,24
+	laddr	r0,r15,-72
+	store	r0,r14,32
+	call	r11,_stat,L
+	br	r0= 0,L243
+	load	r0,r15,24
+	store	r0,r14,24
+	call	r11,_perror,L
+L260:
+L239:
+	load	r11,r15,0
+	move	r14,r15
+	load	r15,r15,8
+	ret	r11,r11
+L243:
+	loadh	r0,r15,-60
+	laddr	r1,61440,L
+	and	r0,r1
+	laddr	r1,32768,L
+	br	r0= r1,L244
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L245,L
+	store	r0,r14,32
+	call	r11,_fprintf,L
+	movei	r0,1
+	store	r0,_exit_stat,L
+	br	L246,L
+L244:
+	loadh	r0,r15,-58
+	seh	r0,r0
+	br	r0<=1,L247
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L248,L
+	store	r0,r14,32
+	loadh	r0,r15,-58
+	seh	r0,r0
+	subi	r0,1
+	store	r0,r14,40
+	call	r11,_fprintf,L
+	movei	r0,1
+	store	r0,_exit_stat,L
+	br	L249,L
+L247:
+	load	r0,_exit_stat,L
+	br	r0<>2,L250
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L251,L
+	store	r0,r14,32
+	call	r11,_fprintf,L
+L249:
+L246:
+	load	r0,r15,32
+	store	r0,r14,24
+	call	r11,_unlink,L
+	br	r0= 0,L260!
+	load	r0,r15,32
+	store	r0,r14,24
+	call	r11,_perror,L
+	br	L260
+L250:
+	loadh	r0,r15,-60
+	laddr	r1,4095
+	and	r0,r1
+	store	r0,r15,-76
+	load	r0,r15,32
+	store	r0,r14,24
+	load	r0,r15,-76
+	store	r0,r14,32
+	call	r11,_chmod,L
+	br	r0= 0,L254
+	load	r0,r15,32
+	store	r0,r14,24
+	call	r11,_perror,L
+L254:
+	load	r0,r15,32
+	store	r0,r14,24
+	loadh	r0,r15,-56
+	store	r0,r14,32
+	loadh	r0,r15,-54
+	store	r0,r14,40
+	call	r11,_chown,L
+	load	r0,r15,-44
+	store	r0,r15,-84
+	load	r0,r15,-40
+	store	r0,r15,-80
+	load	r0,r15,32
+	store	r0,r14,24
+	laddr	r0,r15,-84
+	store	r0,r14,32
+	call	r11,_utime,L
+	load	r0,r15,24
+	store	r0,r14,24
+	call	r11,_unlink,L
+	br	r0= 0,L258
+	load	r0,r15,24
+	store	r0,r14,24
+	call	r11,_perror,L
+L258:
+	csect	code
+	laddr	r0,__iob+32,L
+	store	r0,r14,24
+	laddr	r0,L259,L
+	store	r0,r14,32
+	load	r0,r15,32
+	store	r0,r14,40
+	call	r11,_fprintf,L
+	br	L239,L
+	global	_foreground
+stk10	equ	-72
+	dsect	data
+	csect	code
+	csect	code
+	align	2
+_foreground:
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk10,L
+	store	r13,r15,-32
+	call	r11,_dummy,L
+	movei	r0,2
+	store	r0,r14,24
+	laddrp	r0,_dummy,L
+	store	r0,r14,32
+	call	r11,_signal,L
+	move	r13,r0
+	br	r13= 0,L266
+	movei	r0,2
+	store	r0,r14,24
+	store	r13,r14,32
+	call	r11,_signal,L
+	br	L268
+L266:
+	movei	r0,2
+	store	r0,r14,24
+	call	r11,_isatty,L
+	br	r0= 0,L268
+	movei	r0,1
+L262:
+	load	r13,r15,-32
+	load	r11,r15,0
+	move	r14,r15
+	load	r15,r15,8
+	ret	r11,r11
+L268:
+	movei	r0,0
+	br	L262,L
+	global	_dummy
+stk11	equ	-32
+	dsect	data
+	csect	code
+	align	2
+_dummy:
+	store	r11,r14,0
+	store	r15,r14,8
+	move	r15,r14
+	laddr	r14,r14,stk11,L
+	load	r11,r15,0
+	move	r14,r15
+	load	r15,r15,8
+	ret	r11,r11

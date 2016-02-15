@@ -1,0 +1,70 @@
+%% cfo.780 definition file
+%%eatblanks
+xxx
+%%balance
+PUSH %1;1
+POP %1;-1
+pusha%1 %2;1
+cvtbl %1,-(sp);1
+calls $%1,%2;-%1
+subl2 $4,sp;1
+subl2 $8,sp;2
+subl2 $12,sp;3
+subl2 $16,sp;4
+subl2 $20,sp;5
+subl2 $24,sp;6
+subl2 $28,sp;7
+%3l3 %1,%2,-(sp);1
+%%callcost
+2
+%%subcost
+2
+%%ujump
+JMP Label .*
+%%callfmt
+CALL %s
+%%call
+CALL .*
+%%return
+RET
+%%cjump
+^JMP Label (.*)
+^JZ Label (.*)
+^JNZ Label (.*)
+^JGE Label (.*)
+^JLE Label (.*)
+^JC Label (.*)
+^JNC (.*),(.*)
+^JP Label (.*)
+^JNP Label (.*)
+^JA Label (.*)
+^JBE Label (.*)
+^CALL (.*)
+%%flushend
+.text%1
+%%flushfmt
+.text
+%%jumpfmt
+JMP Label %s
+%%flushbegin
+.data%1
+%%flush
+.globl %1
+%%label
+^Label (.*)
+%% Output label format.
+%%labfmt
+Label %s
+%% Global pre-existing output labels
+%%newlabel
+Label l%d
+%%equate
+(.*)	equ	(.*)
+%%equatefmt
+\1	equ	\2
+%%badlist
+.*.align.*
+.*.word.*
+.*.long.*
+.*.byte.*
+.*.set.*
